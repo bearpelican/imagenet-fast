@@ -2,29 +2,15 @@ import torch
 import torch.nn as nn
 
 
-class tofp16(nn.Module):
-    def __init__(self):
-        super(tofp16, self).__init__()
+class FP16(nn.Module):
+    def __init__(self, module): 
+        super(FP16, self).__init__()
+        self.module = batchnorm_to_fp32(module.half())
+        
+    def forward(self, input): 
+        return self.module(input.half())
 
-    def forward(self, input):
-        return input.half()
-
-
-def copy_in_params(net, params):
-    net_params = list(net.parameters())
-    for i in range(len(params)):
-        net_params[i].data.copy_(params[i].data)
-
-
-def set_grad(params, params_with_grad):
-
-    for param, param_w_grad in zip(params, params_with_grad):
-        if param.grad is None:
-            param.grad = torch.nn.Parameter(param.data.new().resize_(*param.data.size()))
-        param.grad.data.copy_(param_w_grad.grad.data)
-
-
-def BN_convert_float(module):
+def batchnorm_to_fp32(module):
     '''
     BatchNorm layers to have parameters in single precision.
     Find all layers and convert them back to float. This can't
@@ -35,9 +21,18 @@ def BN_convert_float(module):
     if isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
         module.float()
     for child in module.children():
-        BN_convert_float(child)
+        batchnorm_to_fp32(child)
     return module
 
+def copy_fp32_to_model(m, fp32_params):
+    m_params = list(m.parameters())
+    for fp32_param, m_param in zip(fp32_params, m_params):
+        m_param.data.copy_(fp32_param.data)
 
-def network_to_half(network):
-    return nn.Sequential(tofp16(), BN_convert_float(network.half()))
+def update_fp32_grads(fp32_params, m):
+    m_params = list(m.parameters())
+    for fp32_param, m_param in zip(fp32_params, m_params):
+        if fp32_param.grad is None:
+            fp32_param.grad = torch.nn.Parameter(fp32_param.data.new().resize_(*fp32_param.data.size()))
+        fp32_param.grad.data.copy_(m_param.grad.data)
+
