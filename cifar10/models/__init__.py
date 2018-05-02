@@ -1,4 +1,5 @@
-from .wideresnet import *
+# from .wideresnet import *
+from .wideresnet_network_double import *
 from .darknet import *
 from .resnet import *
 from .dpn import *
