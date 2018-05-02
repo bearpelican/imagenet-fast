@@ -76,7 +76,7 @@ def wrn_22(): return WideResNet(depth=22, num_classes=10, widen_factor=6, dropRa
 def wrn_22_k8(): return WideResNet(depth=22, num_classes=10, widen_factor=8, dropRate=0.)
 def wrn_22_k10(): return WideResNet(depth=22, num_classes=10, widen_factor=10, dropRate=0.)
 def wrn_22_k8_p2(): return WideResNet(depth=22, num_classes=10, widen_factor=8, dropRate=0.2)
-def wrn_28(): return WideResNet(depth==28, num_classes=10, widen_factor=6, dropRate=0.)
+def wrn_28(): return WideResNet(depth=28, num_classes=10, widen_factor=6, dropRate=0.)
 def wrn_28_k8(): return WideResNet(depth=28, num_classes=10, widen_factor=8, dropRate=0.)
 def wrn_28_k8_p2(): return WideResNet(depth=28, num_classes=10, widen_factor=8, dropRate=0.2)
 def wrn_28_p2(): return WideResNet(depth=28, num_classes=10, widen_factor=6, dropRate=0.2)
