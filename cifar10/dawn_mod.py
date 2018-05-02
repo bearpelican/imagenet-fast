@@ -302,9 +302,9 @@ def main():
     model = model.cuda()
     if args.distributed: model = DDP(model)
     if args.data_parallel:
-         n_dev = 4
-         model = nn.DataParallel(model, range(n_dev))
-         args.batch_size *= n_dev
+        n_dev = 4
+        model = nn.DataParallel(model, range(n_dev))
+        args.batch_size *= n_dev
 
     data,train_sampler,val_sampler = torch_loader(args.data, args.sz)
 
